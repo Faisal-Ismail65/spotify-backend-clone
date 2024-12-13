@@ -1,11 +1,30 @@
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SongsModule } from './songs/songs.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { Artist } from './artists/artist.entity';
+import { User } from './users/user.entity';
+import { Song } from './songs/song.entity';
+import { Playlist } from './playlists/playlist.entity';
+import { PlayListModule } from './playlists/playlists.module';
 
 @Module({
-  imports: [SongsModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      database: 'spotify-clone',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'root',
+      entities: [Song, Artist, User, Playlist],
+      synchronize: true,
+    }),
+    SongsModule,
+    PlayListModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
