@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -22,17 +21,7 @@ export class SongsController {
     return this.songsService.create(createSongDTO);
   }
   @Get()
-  findAll() {
-    try {
-      return this.songsService.findAll();
-    } catch (err) {
-      throw new HttpException(
-        'server erorr',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        { cause: err },
-      );
-    }
-  }
+  findAll() {}
 
   @Get(':id')
   findOne(
