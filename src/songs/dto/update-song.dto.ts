@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class UpdateSongDto {
+export class UpdateSongDTO {
   @IsString()
   @IsOptional()
   readonly title: string;
