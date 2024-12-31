@@ -24,7 +24,7 @@ export class AuthController {
   login(
     @Body()
     loginDto: LoginDTO,
-  ): Promise<User> {
+  ): Promise<{ accessToken: string }> {
     return this.authService.login(loginDto);
   }
 }
