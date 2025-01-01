@@ -20,6 +20,12 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ nullable: true, type: 'text' })
+  twoFASecret: string;
+
+  @Column({ default: false, type: 'boolean' })
+  enable2FA: boolean;
+
   /**
    * A user can create many playLists
    */
