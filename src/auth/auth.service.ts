@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ArtistsService } from 'src/artists/artists.service';
 import { Enable2FAType, PayloadType } from './types';
 import { UpdateResult } from 'typeorm';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,11 @@ export class AuthService {
     private artistsService: ArtistsService,
   ) {}
 
-  async login(loginDto: LoginDTO): Promise<{ accessToken: string }> {
+  async login(
+    loginDto: LoginDTO,
+  ): Promise<
+    { accessToken: string } | { validate2FA: string; message: string }
+  > {
     const user = await this.userService.findOne(loginDto);
     const passwordMatched = await bcrypt.compare(
       loginDto.password,
@@ -29,6 +34,15 @@ export class AuthService {
       if (artist) {
         payload.artistId = artist.id;
       }
+
+      if (user.enable2FA && user.twoFASecret) {
+        return {
+          validate2FA: 'http://localhost:4000/auth/validate-2fa',
+          message:
+            'Please sends one time password from your Google Authenticator App',
+        };
+      }
+
       return {
         accessToken: this.jwtService.sign(payload),
       };
@@ -74,5 +88,9 @@ export class AuthService {
 
   async disable2FA(userId: number): Promise<UpdateResult> {
     return this.userService.disable2FA(userId);
+  }
+
+  async validateUserByApiKey(apiKey: string): Promise<User> {
+    return this.userService.findByApiKey(apiKey);
   }
 }
