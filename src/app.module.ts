@@ -10,9 +10,16 @@ import { AuthModule } from './auth/auth.module';
 import { ArtistsModule } from './artists/artists.module';
 import { dataSourceOptions } from 'db/data-source';
 import { SeedModule } from './seed/seed.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.development', '.env.production'],
+      isGlobal: true,
+      load: [configuration],
+    }),
     TypeOrmModule.forRoot(dataSourceOptions),
     SongsModule,
     PlayListModule,
