@@ -8,19 +8,22 @@ import { PlayListModule } from './playlists/playlists.module';
 import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ArtistsModule } from './artists/artists.module';
-import { dataSourceOptions } from 'db/data-source';
+import { typeOrmAsyncConfig } from 'db/data-source';
 import { SeedModule } from './seed/seed.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
+import { validate } from 'env.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.production'],
+      validate: validate,
       isGlobal: true,
       load: [configuration],
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    // TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     SongsModule,
     PlayListModule,
     UserModule,

@@ -11,7 +11,7 @@ async function bootstrap() {
   // await seedService.seed();
   // await app.listen(process.env.PORT ?? 4000);
   const configService = app.get(ConfigService);
-  console.log('PORT ============> ', configService.get<number>('port'));
+  // console.log('PORT ============> ', configService.get<number>('port'));
   await app.listen(configService.get<number>('port') ?? 4000);
 }
 bootstrap();
