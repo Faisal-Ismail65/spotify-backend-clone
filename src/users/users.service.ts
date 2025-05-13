@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
@@ -14,6 +18,12 @@ export class UsersService {
   ) {}
 
   async create(userDTO: CreateUserDTO): Promise<User> {
+    const existingUser = await this.userRepo.findOneBy({
+      email: userDTO.email,
+    });
+    if (existingUser) {
+      throw new BadRequestException('Email already in use');
+    }
     const user = new User();
     user.firstName = userDTO.firstName;
     user.lastName = userDTO.lastName;
