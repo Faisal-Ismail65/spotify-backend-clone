@@ -1,9 +1,8 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SongsModule } from './songs/songs.module';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlayListModule } from './playlists/playlists.module';
 import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -17,7 +16,7 @@ import { validate } from 'env.validation';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.development', '.env.production'],
+      envFilePath: [`${process.cwd()}/.env.${process.env.NODE_ENV}`],
       validate: validate,
       isGlobal: true,
       load: [configuration],
@@ -34,12 +33,4 @@ import { validate } from 'env.validation';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('songs'); // option 1
-    // consumer
-    //   .apply(LoggerMiddleware)
-    //   .forRoutes({ path: 'songs', method: RequestMethod.POST }); // option 2
-    // consumer.apply(LoggerMiddleware).forRoutes(SongsController); // option 3
-  }
-}
+export class AppModule {}
