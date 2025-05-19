@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
   TypeOrmModuleAsyncOptions,
@@ -8,23 +9,20 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
   inject: [ConfigService],
-  useFactory: async (
-    configService: ConfigService,
-  ): Promise<TypeOrmModuleOptions> => {
+  useFactory: async (): Promise<TypeOrmModuleOptions> => {
     return {
       type: 'postgres',
-      host: configService.get<string>('dbHost'),
-      port: configService.get<number>('dbPort'),
-      username: configService.get<string>('dbUsername'),
-      database: configService.get<string>('dbName'),
-      password: configService.get<string>('dbPassword'),
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
       entities: ['dist/**/*.entity.js'],
       synchronize: false,
       migrations: ['dist/db/migrations/*.js'],
     };
   },
 };
-
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
