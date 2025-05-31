@@ -29,8 +29,8 @@ export class UsersService {
     user.lastName = userDTO.lastName;
     user.email = userDTO.email;
     user.apiKey = uuid();
-    const salt = await bcrypt.genSalt();
-    user.password = await bcrypt.hash(userDTO.password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    user.password = await bcrypt.hashSync(userDTO.password, salt);
     const savedUser = await this.userRepo.save(user);
     delete savedUser.password;
     return savedUser;
